@@ -2,6 +2,8 @@ import React, { useState } from "react";
 import { Switch, Route, Link } from 'react-router-dom'
 import Form from './Form'
 import Home from './Home'
+import * as yup from 'yup'
+import formSchema from './validation/formSchema'
 
 const initialFormValues = {
   name: '',
@@ -27,9 +29,56 @@ const App = () => {
   const [formValues, setFormValues] = useState(initialFormValues)
   const [formErrors, setFormErrors] = useState(initialFormErrors)
 
-  const confirmOrder = order => {
-
+  const addOrder = newOrder => {
+    setOrders([newOrder])
     setFormValues(initialFormValues)
+  }
+
+  const inputChange = (name, value) => {
+    yup
+      .reach(formSchema, name)
+      .validate(value)
+      .then(valid => {
+        setFormErrors({
+          ...formErrors,
+          [name]: "",
+        })
+      })
+      .catch(err => {
+        setFormErrors({
+          ...formErrors,
+          [name]: err.errors[0],
+        })
+      })
+
+    setFormValues({
+      ...formValues,
+      [name]: value
+    })
+  }
+
+  const checkboxChange = (name, isChecked) => {
+    setFormValues({
+      ...formValues,
+      hobbies: {
+        ...formValues.hobbies,
+        [name]: isChecked,
+      }
+    })
+  }
+
+  const submit = () => {
+    const newOrder = {
+      name: formValues.name.trim(),
+      size: formValues.size,
+      pepperoni: formValues.pepperoni,
+      olives: formValues.olives,
+      pineapple: formValues.pineapple,
+      bacon: formValues.bacon,
+      instructions: formValues.instructions
+    }
+
+    addOrder(newOrder)
   }
 
   return (
@@ -41,7 +90,13 @@ const App = () => {
       </header>
       <Switch>
         <Route path='/pizza'>
-          <Form />
+          <Form 
+          values={formValues}
+          submit={submit}
+          inputChange={inputChange}
+          checkboxChange={checkboxChange}
+          formErrors={formErrors}
+          />
         </Route>
         <Route path='/'>
           <Home />

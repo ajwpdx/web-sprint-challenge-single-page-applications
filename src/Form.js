@@ -1,18 +1,37 @@
 import React from "react";
 
-const Form = () => {
+const Form = (props) => {
+
+    const {
+        values,
+        submit,
+        inputChange,
+        checkboxChange,
+        formErrors
+    } = props
 
     const onSubmit = evt => {
         evt.preventDefault()
-        // submit()
+        submit()
+    }
+
+    const onInputChange = evt => {
+        const name = evt.target.name
+        const value = evt.target.value
+        inputChange(name, value)
+    }
+
+    const onCheckboxChange = evt => {
+        const { name, checked } = evt.target
+        checkboxChange(name, checked)
     }
 
     return (
         <form className='form-container' onSubmit={onSubmit}>
             <label>Name:&nbsp;
           <input
-                    value="{values.username}"
-                    // onChange="{onInputChange}"
+                    value={values.name}
+                    onChange={onInputChange}
                     name='name'
                     type='text'
                 />
@@ -20,7 +39,7 @@ const Form = () => {
 
             <label>Size:&nbsp;
           <select
-                    // onChange={onInputChange}
+                    onChange={onInputChange}
                     value="{values.role}"
                     name='size'
                 >
@@ -31,52 +50,56 @@ const Form = () => {
                 </select>
             </label>
             <div className='toppings'>
-        <h4>Toppings</h4>
-        <label>Pepperoni
+                <h4>Toppings</h4>
+                <label>Pepperoni
           <input
-            type="checkbox"
-            name='pepperoni'
-            checked='false'
-            // onChange={onCheckboxChange}
-          />
-        </label>
+                        type="checkbox"
+                        name='pepperoni'
+                        checked={values.pepperoni === true}
+                        onChange={onCheckboxChange}
+                    />
+                </label>
 
-        <label>Olives
+                <label>Olives
           <input
-            type="checkbox"
-            name='olives'
-            // checked={values.hobbies.reading === true}
-            // onChange={onCheckboxChange}
-          />
-        </label>
+                        type="checkbox"
+                        name='olives'
+                    checked={values.olives === true}
+                    onChange={onCheckboxChange}
+                    />
+                </label>
 
-        <label>Pineapple
+                <label>Pineapple
           <input
-            type="checkbox"
-            name='pineapple'
-            // checked={values.hobbies.coding === true}
-            // onChange={onCheckboxChange}
-          />
-        </label>
+                        type="checkbox"
+                        name='pineapple'
+                    // checked={values.hobbies.coding === true}
+                    // onChange={onCheckboxChange}
+                    />
+                </label>
 
-        <label>Bacon
+                <label>Bacon
           <input
-            type="checkbox"
-            name='bacon'
-            // checked={values.hobbies.coding === true}
-            // onChange={onCheckboxChange}
-          />
-        </label>
-      </div>
+                        type="checkbox"
+                        name='bacon'
+                    // checked={values.hobbies.coding === true}
+                    // onChange={onCheckboxChange}
+                    />
+                </label>
+            </div>
 
-      <label>Special Instructions&nbsp;
-          <input 
+            <label>Special Instructions&nbsp;
+          <input
                     value="{values.username}"
                     // onChange="{onInputChange}"
                     name='instructions'
                     type='text'
                 />
             </label>
+            <button className='submit-btn'>Submit</button>
+            <div className='errors'>
+                <div>{formErrors.name}</div>
+            </div>
 
         </form>
     );
